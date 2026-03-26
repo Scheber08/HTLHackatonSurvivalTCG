@@ -29,4 +29,5 @@ export interface RunState {
   base: BaseState;
   combat: CombatState | null;
   rewardOptions: RewardOption[];
+  rewardsChosenThisPhase: number;
 }

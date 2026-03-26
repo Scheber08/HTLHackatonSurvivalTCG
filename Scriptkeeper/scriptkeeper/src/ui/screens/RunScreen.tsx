@@ -5,15 +5,13 @@ import { starterBuildings } from "../../data/buildings/starterBuildings";
 import { GameCard } from "../components/GameCard";
 import { canEndNight } from "../../engine/combat/canEndNight";
 
-function formatBuildingBonus(modifiers: string[]): string {
-  return modifiers
-    .map((modifier) => {
-      if (modifier === "defender_plus_1_attack") return "+ATK aura";
-      if (modifier === "defender_plus_1_def") return "+DEF/SPD aura";
-      if (modifier === "outer_wall_plus_2") return "+Wall strength";
-      return modifier;
-    })
-    .join(", ");
+function formatBuildingBonus(modifiers: string[]): string[] {
+  return modifiers.map((modifier) => {
+    if (modifier === "defender_plus_1_attack") return "+30 ATK aura";
+    if (modifier === "defender_plus_1_def") return "+35 DEF & +8 SPD aura";
+    if (modifier === "outer_wall_plus_2") return "+25 wall mitigation / +70 wall build";
+    return modifier;
+  });
 }
 
 export function RunScreen() {
@@ -104,51 +102,55 @@ export function RunScreen() {
             </div>
           </div>
 
-          <div className="grid">
-            {isDay && (
-              <div className="panel animated-panel">
+                    <div className="grid">
+                        {isDay && (
+            <div className="panel animated-panel day-panel">
                 <h2 className="panel-title">Day Phase</h2>
-                <p className="muted">
-                  Expand the ruin, prepare your defenses, and decide how much you
-                  want to invest before night falls.
+                <p className="muted day-muted">
+                Expand the ruin, prepare your defenses, and decide how much you
+                want to invest before night falls.
                 </p>
 
                 <div className="button-row" style={{ marginTop: 16 }}>
-                  <button className="btn btn-build" onClick={buildWall}>
+                <button className="btn btn-build day-btn" onClick={buildWall}>
                     Reinforce Wall (+60, -10 Wood)
-                  </button>
-                  <button className="btn btn-primary" onClick={startNight}>
+                </button>
+                <button className="btn btn-primary day-start-btn" onClick={startNight}>
                     Start Night
-                  </button>
+                </button>
                 </div>
 
                 <h3 style={{ marginTop: 24 }}>Structures</h3>
                 <div className="building-list">
-                  {starterBuildings.map((building) => (
-                    <div key={building.id} className="building-card building-card-animated">
-                      <strong>{building.name}</strong>
+                {starterBuildings.map((building) => (
+                    <div key={building.id} className="building-card building-card-animated day-building-card">
+                    <strong>{building.name}</strong>
 
-                      <div className="building-costs">
+                    <div className="building-costs">
                         {Object.entries(building.cost).map(([resource, value]) => (
-                          <span key={resource} className={`resource-pill resource-${resource}`}>
+                        <span key={resource} className={`resource-pill resource-${resource}`}>
                             {value} {resource}
-                          </span>
+                        </span>
                         ))}
-                      </div>
-
-                      <div className="muted" style={{ marginTop: 10 }}>
-                        {formatBuildingBonus(building.modifiers)}
-                      </div>
-
-                      <div className="button-row" style={{ marginTop: 12 }}>
-                        <button className="btn btn-build" onClick={() => buildBuilding(building.id)}>
-                          Build
-                        </button>
-                      </div>
                     </div>
-                  ))}
+
+                    <div className="building-bonus-list">
+                        {formatBuildingBonus(building.modifiers).map((bonus) => (
+                        <span key={bonus} className="building-bonus-pill day-bonus-pill">
+                            {bonus}
+                        </span>
+                        ))}
+                    </div>
+
+                    <div className="button-row" style={{ marginTop: 12 }}>
+                        <button className="btn btn-build day-btn" onClick={() => buildBuilding(building.id)}>
+                        Build
+                        </button>
+                    </div>
+                    </div>
+                ))}
                 </div>
-              </div>
+            </div>
             )}
 
             {isNight && combat && (
@@ -280,10 +282,19 @@ export function RunScreen() {
 
             {isReward && (
               <div className="panel animated-panel">
-                <h2 className="panel-title">Reward</h2>
-                <p className="muted">
-                  The ruin held. Choose how to strengthen the next day.
-                </p>
+                <div className="reward-header">
+                  <div>
+                    <h2 className="panel-title">Rewards</h2>
+                    <p className="muted">
+                      Choose <strong>{2 - run.rewardsChosenThisPhase}</strong> more reward
+                      {2 - run.rewardsChosenThisPhase === 1 ? "" : "s"}.
+                    </p>
+                  </div>
+
+                  <div className="badge phase-reward">
+                    Picks: {run.rewardsChosenThisPhase}/2
+                  </div>
+                </div>
 
                 <div className="reward-list" style={{ marginTop: 16 }}>
                   {run.rewardOptions.map((reward) => {
@@ -299,6 +310,9 @@ export function RunScreen() {
                             <div className="reward-stat reward-stat-def">DEF: {rewardCard.defense}</div>
                             <div className="reward-stat reward-stat-spd">SPD: {rewardCard.speed}</div>
                             <div className="muted">Cost: {rewardCard.points}</div>
+                            <div className="muted" style={{ marginTop: 6 }}>
+                              {rewardCard.text}
+                            </div>
                           </div>
                         )}
 

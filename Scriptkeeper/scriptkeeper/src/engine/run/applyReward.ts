@@ -5,15 +5,18 @@ export function applyReward(run: RunState, reward: RewardOption): RunState {
     return run;
   }
 
-  const nextRun: RunState = {
+  const nextRewardOptions = run.rewardOptions.filter((entry) => entry.id !== reward.id);
+  const nextChosenCount = run.rewardsChosenThisPhase + 1;
+  const shouldReturnToDay = nextChosenCount >= 2;
+
+  let nextRun: RunState = {
     ...run,
-    phase: "day",
-    day: run.day + 1,
-    rewardOptions: [],
+    rewardOptions: nextRewardOptions,
+    rewardsChosenThisPhase: nextChosenCount,
   };
 
   if (reward.type === "card" && reward.cardId) {
-    return {
+    nextRun = {
       ...nextRun,
       deck: [...nextRun.deck, reward.cardId],
       unlockedThisRun: nextRun.unlockedThisRun.includes(reward.cardId)
@@ -23,7 +26,7 @@ export function applyReward(run: RunState, reward: RewardOption): RunState {
   }
 
   if (reward.type === "resource" && reward.resourceType && reward.amount) {
-    return {
+    nextRun = {
       ...nextRun,
       resources: {
         ...nextRun.resources,
@@ -34,12 +37,22 @@ export function applyReward(run: RunState, reward: RewardOption): RunState {
   }
 
   if (reward.type === "heal" && reward.amount) {
-    return {
+    nextRun = {
       ...nextRun,
       base: {
         ...nextRun.base,
         coreHealth: nextRun.base.coreHealth + reward.amount,
       },
+    };
+  }
+
+  if (shouldReturnToDay) {
+    return {
+      ...nextRun,
+      phase: "day",
+      day: nextRun.day + 1,
+      rewardOptions: [],
+      rewardsChosenThisPhase: 0,
     };
   }
 

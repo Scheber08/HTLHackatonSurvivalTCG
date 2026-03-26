@@ -21,5 +21,6 @@ export function endNightPhase(run: RunState): RunState {
     deck: rebuiltDeck,
     combat: null,
     rewardOptions: lost ? [] : generateRewards(),
+    rewardsChosenThisPhase: 0,
   };
 }

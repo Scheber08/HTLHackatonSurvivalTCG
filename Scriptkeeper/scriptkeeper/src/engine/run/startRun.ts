@@ -17,5 +17,6 @@ export function startRun(startingDeck: string[]): RunState {
     base: createBaseState(),
     combat: null,
     rewardOptions: [],
+    rewardsChosenThisPhase: 0,
   };
 }
