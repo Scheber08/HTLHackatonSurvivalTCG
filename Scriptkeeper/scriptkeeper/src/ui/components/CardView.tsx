@@ -9,7 +9,9 @@ export function CardView({ card }: CardViewProps) {
     <div style={{ border: "1px solid gray", padding: 12, width: 180 }}>
       <h3>{card.name}</h3>
       <p>Type: {card.type}</p>
-      <p>Points: {card.points}</p>
+      <p>Cost: {card.points}</p>
+      <p>ATK: {card.attack}</p>
+      <p>DEF: {card.defense}</p>
       <p>{card.text}</p>
     </div>
   );

@@ -2,8 +2,8 @@ import type { BaseState } from "../../core/types/run";
 
 export function createBaseState(): BaseState {
   return {
-    coreHealth: 20,
-    outerWallHealth: 10,
+    coreHealth: 300,
+    outerWallHealth: 180,
     buildings: [],
     modifiers: [],
   };

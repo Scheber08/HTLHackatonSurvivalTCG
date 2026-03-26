@@ -6,11 +6,30 @@ interface BasePanelProps {
 
 export function BasePanel({ base }: BasePanelProps) {
   return (
-    <div>
-      <h2>Base</h2>
-      <p>Core HP: {base.coreHealth}</p>
-      <p>Outer Wall HP: {base.outerWallHealth}</p>
-      <p>Buildings: {base.buildings.join(", ") || "none"}</p>
+    <div className="panel">
+      <h2 className="panel-title">Ruin Core</h2>
+
+      <div className="stat-list">
+        <div className="stat-row">
+          <span>Core HP</span>
+          <strong>{base.coreHealth}</strong>
+        </div>
+
+        <div className="stat-row">
+          <span>Outer Wall HP</span>
+          <strong>{base.outerWallHealth}</strong>
+        </div>
+
+        <div className="stat-row">
+          <span>Buildings</span>
+          <strong>{base.buildings.join(", ") || "none"}</strong>
+        </div>
+
+        <div className="stat-row">
+          <span>Modifiers</span>
+          <strong>{base.modifiers.join(", ") || "none"}</strong>
+        </div>
+      </div>
     </div>
   );
 }

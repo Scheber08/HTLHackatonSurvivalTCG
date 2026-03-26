@@ -1,20 +1,13 @@
-export type CardType =
-  | "defender"
-  | "structure"
-  | "tactic"
-  | "script"
-  | "relic"
-  | "base";
+export type CardType = "defender";
 
 export interface CardDefinition {
   id: string;
   name: string;
   type: CardType;
   points: number;
-  attack?: number;
-  defense?: number;
-  health?: number;
+  attack: number;
+  defense: number;
+  speed: number;
   text: string;
   tags: string[];
-  effects: string[];
 }

@@ -1,24 +1,29 @@
-import type { CombatState } from "./createCombatState";
+import type { CombatState } from "../../core/types/combat";
 
 export function resolveAttack(state: CombatState): CombatState {
-  const nextState = { ...state };
+  return {
+    ...state,
+    lanes: state.lanes.map((lane) => {
+      if (!lane.playerCard) {
+        return lane;
+      }
 
-  if (nextState.playerUnits.length > 0 && nextState.enemyUnits.length > 0) {
-    nextState.enemyUnits[0] = {
-      ...nextState.enemyUnits[0],
-      health: nextState.enemyUnits[0].health - nextState.playerUnits[0].attack,
-    };
+      const remainingHealth = lane.playerCard.currentHealth - lane.enemyAttack;
 
-    nextState.playerUnits[0] = {
-      ...nextState.playerUnits[0],
-      health: nextState.playerUnits[0].health - nextState.enemyUnits[0].attack,
-    };
+      if (remainingHealth <= 0) {
+        return {
+          ...lane,
+          playerCard: null,
+        };
+      }
 
-    nextState.playerUnits = nextState.playerUnits.filter((u) => u.health > 0);
-    nextState.enemyUnits = nextState.enemyUnits.filter((u) => u.health > 0);
-  } else if (nextState.enemyUnits.length > 0) {
-    nextState.baseHealth -= nextState.enemyUnits[0].attack;
-  }
-
-  return nextState;
+      return {
+        ...lane,
+        playerCard: {
+          ...lane.playerCard,
+          currentHealth: remainingHealth,
+        },
+      };
+    }),
+  };
 }

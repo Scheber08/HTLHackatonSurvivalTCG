@@ -15,5 +15,7 @@ export function startRun(startingDeck: string[]): RunState {
     lostCards: [],
     unlockedThisRun: [],
     base: createBaseState(),
+    combat: null,
+    rewardOptions: [],
   };
 }
